@@ -19,6 +19,7 @@ class Enemigo(Character):
         self.point_value = 0 # cuanto vale al matarlo
     
 
+    # volver a spawnear arriba si entran en las tuberías
     def volver_a_salir(self):
         if self.dying == False:
             new_pos = random.choice([(27*8, 2*8), (4*8, 2*8)])
@@ -32,6 +33,8 @@ class Enemigo(Character):
         if frame-self.last_frame > 15: # delay de 0.5s (30fps)
             if self.stuneable:
                 if pow and self.is_grounded: # si le han dado al pow y estaba en el suelo
+
+                    # ajustar saltito cuando los stunneas
                     if self.gravedad_max == 0.2:
                         self.dy = -2
                     else:
@@ -42,12 +45,14 @@ class Enemigo(Character):
                     for tile in bloque:
                         dist_x = abs(self.x - (tile[0][0])*8)
                         dist_y = abs(self.y+self.sprite[3] - tile[0][1]*8)
+                        # colisión con los bloques levantados
                         if (dist_x < 10 and dist_y < 1):
                             if self.gravedad_max == 0.2:
                                 self.dy = -2
                             else:
                                 self.dy = -5
                             if self.vidas > 0:
+                                # sonido de stunneo
                                 pyxel.play(3, 4, 30, False)
                                 self.vidas -= 1
                             else:

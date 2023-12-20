@@ -123,6 +123,10 @@ class XInput:
 		packet_number, gamepad_state = self.GetState(0)
 		self.simulate_keyboard_input(gamepad_state.wButtons)
 
+	"""
+	Añadido simulate_keyboard_input por Ander Gaytán para tomar inputs de un mando y simular una presion del teclado cada frame del juego
+	"""
+
 	def simulate_keyboard_input(self, button_state):
         # Simulate keyboard inputs based on the controller button state
 		self.release_previous_keys()

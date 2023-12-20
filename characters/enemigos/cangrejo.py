@@ -1,7 +1,6 @@
 import config
 from characters.enemigo import Enemigo
 
-#Solo falta cambiar los sprites y numero de vidas y esas cosas, y meterlo de herencia en las demas files
 class Cangrejo(Enemigo):
     def __init__(self, x, y, mode=0):
         super().__init__(x, y, [0, 136, 16, 16], vidas=2)
@@ -25,9 +24,7 @@ class Cangrejo(Enemigo):
         self.type = "c"
 
     def move(self, frame):
-        last_y = self.gravity()
-        self.moving = True
-        if self.vidas == 1:
+        if self.vidas == 1: # que se haga más rapido una vez le das una vez
             sign = 1 if self.last_dx > 0 else -1
             self.last_dx = 2 *(self.enfado+1)* sign
         elif self.vidas == 2:
@@ -39,19 +36,18 @@ class Cangrejo(Enemigo):
                 self.frame_stun = frame
                 self.downed = True          
                 self.last_dx = self.dx
-            self.moving = False
             self.dx = 0
+            
+            # esta detección de stunneo se podría meter directamente en la clase enemigo ya que es igual para todos, pero bueno...
             if frame - self.frame_stun > 150:  # 5 segundos de delay
                 if self.enfado < 2:
                     self.enfado +=1
                 self.downed = False
                 self.dx = self.last_dx
-                self.moving = True
                 self.vidas = self.max_vidas
         else:
             self.dx = self.last_dx
-            self.moving = True
-        self.update_pos(last_y)
+        self.update_pos()
 
     def animate(self, frame):
         self.sprite[0] = 0
@@ -59,7 +55,7 @@ class Cangrejo(Enemigo):
             self.sprite[1] = 152
         elif self.enfado == 2:
             self.sprite[1] = 168
-        if self.moving:
+        if not self.downed:
             if self.vidas == 2:
                 self.sprite[0] = (((frame // 4) % 2)+1) * 16
             elif self.vidas == 1:

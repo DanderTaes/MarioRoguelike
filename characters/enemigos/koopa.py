@@ -20,30 +20,28 @@ class Koopa(Enemigo):
         self.type = "k"
 
     def move(self, frame):
-        last_y = self.gravity()
-        self.moving = True
+
         if self.dying == False:
             if self.vidas == 0:
                 if not self.downed:
+                    # primer frame del stunneo
                     self.frame_stun = frame
                     self.downed = True          
                     self.last_dx = self.dx
-                self.moving = False
+        
                 self.dx = 0
                 if frame - self.frame_stun > 150: # 5 segundos de delay
                     self.enfado = 1
                     self.downed = False
                     self.dx = self.last_dx
-                    self.moving = True
+            
                     self.vidas = self.max_vidas
             else:
                 sign = 1 if self.last_dx > 0 else -1
                 self.last_dx = (self.enfado+1) * sign
                 self.dx = self.last_dx
-                self.moving = True
-        else:
-            self.moving = False
-        self.update_pos(last_y)
+        
+        self.update_pos()
        
 
     def animate(self, frame):
@@ -52,7 +50,7 @@ class Koopa(Enemigo):
         else:
             self.sprite[1] = 72
         self.sprite[0] = 16 # koopa parado
-        if self.moving:
+        if not self.downed:
             self.sprite[0] = (((frame//2)%3))*16
         else:
             self.sprite[0] = ((frame//2)%2 + 3)*16

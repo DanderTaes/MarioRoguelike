@@ -12,16 +12,17 @@ class Moneda(Enemigo):
         if mode == 1:
             self.dx = 0
             self.last_dx = 0
-        self.max_vidas = 0
+        self.max_vidas = 0 # ESTO ES LO QUE LE INDICA AL RESTO DE CLASES QUE ES UNA MONEDA
 
         self.point_value = config.VAL_MONEDA # cuantos puntos por matarla
     
     def volver_a_salir(self):
+        # reescribir la funcion de las tuberías para que despawnee si llega a una tubería (solo tienes para cogerla un tiempo limitado)
         self.alive = False
     
     def slow_death_enemy(self, frame):
+        # sobreescribir la animacion de muerte para hacer la explosioncita
         if self.dying == False:
-            self.moving = False
             self.death_frame = frame
             self.dying = True
             self.dy = -1
@@ -37,18 +38,14 @@ class Moneda(Enemigo):
             else:
                 self.alive = False
 
-    def move(self, frame): 
-        last_y = self.gravity()
-        self.moving = True
+    def move(self, frame):
         if self.vidas == 0:
             if self.dying == False:
                 self.slow_death_enemy(frame)
-            self.moving = False
         else:
             self.dx = self.last_dx
-            self.moving = True
-        self.update_pos(last_y)
+        self.update_pos()
 
     def animate(self, frame):
-        if self.moving:
+        if self.dying == False:
             self.sprite[0] = (((frame//2)%4))*8

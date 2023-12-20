@@ -19,13 +19,13 @@ class Mosca(Enemigo):
             self.last_dx = 2 *(self.enfado+1)* sign
             self.point_value = config.VAL_MOSCA * 4 # cuantos puntos por matarla
             self.enfado = 1
+        
+        # las moscas no tienen tipos porque al estar saltando es dificil hacer que colisionen entre ellas y se den la vuelta
         self.type = ""
 
 
 
     def move(self, frame):
-        last_y = self.gravity()
-        self.moving = True
         if self.vidas == 0:
             if not self.downed:
                 self.frame_stun = frame
@@ -36,9 +36,10 @@ class Mosca(Enemigo):
                 self.enfado = 1
                 self.downed = False
                 self.dx = self.last_dx
-                self.moving = True
                 self.vidas = self.max_vidas
         else:
+            # salto
+            # si está en el suelo esperar y luego saltar
             if self.is_grounded:
                 espera = 45
                 if self.enfado == 1:
@@ -51,8 +52,7 @@ class Mosca(Enemigo):
                 sign = 1 if self.last_dx > 0 else -1
                 self.last_dx = ((self.enfado+1)*0.2) * sign
                 self.dx = self.last_dx
-                self.moving = True
-        self.update_pos(last_y)
+        self.update_pos()
 
     def animate(self, frame):
         self.sprite[0] = 0
@@ -60,7 +60,7 @@ class Mosca(Enemigo):
             self.sprite[1] = 120
         else:
             self.sprite[1] = 104
-        if self.moving:
+        if not self.downed:
             self.sprite[0] = (((frame // 2) % 2)+1) * 16
         else:
             self.sprite[0] = 48
